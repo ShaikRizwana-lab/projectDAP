@@ -3,11 +3,9 @@ import sys
 sys.path.append(path.abspath(r'C:\\Users\\Rizwana\Desktop\Assignments\DAP\DAP_Project'))
 
 from Connections.Connnections_Riz import DBConnections
-import Misc
 import pandas as pd
 import scipy
 import numpy
-import Misc
 import csv 
 
 
@@ -84,6 +82,14 @@ def data_cleaning():
 
     
 
+def data_dump_mysql():
+    client = DBConnections.Connection_Mysql()
+    mycursor = client.cursor()
+    mycursor.execute("CREATE DATABASE daptest2")
+    mycursor.execute("USE daptest2")
+    mycursor.execute("CREATE TABLE customers (name VARCHAR(255), address VARCHAR(255))")
 
-data_cleaning()
 
+data_dump_mysql()
+
+#data_cleaning()
