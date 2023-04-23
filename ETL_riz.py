@@ -39,7 +39,7 @@ df = DBOperations.get_data_mongo(financial_db)
 
 #checking for all the NA values
 #print(df.isnull().sum())
-
+######################Transformation
 #removing NA and replacing it with 0
 df = df.fillna(0.00)
 #print(df.isnull().sum())
@@ -50,34 +50,44 @@ df = df.fillna(0.00)
 #print(df.describe())
 
 #Changing datatype from string to 
-df['REGULAR'] = (df['REGULAR'].replace('[\$,]', '', regex=True)
-                           .astype(float))
 
-df['RETRO'] = (df['RETRO'].replace('[\$,]', '', regex=True)
-                           .astype(float))
+# df['REGULAR'] = (df['REGULAR'].replace('[\$,]', '', regex=True)
+#                            .astype(float))
 
-df['OTHER'] = (df['OTHER'].replace('[\$,]', '', regex=True)
-                           .astype(float))
+# df['RETRO'] = (df['RETRO'].replace('[\$,]', '', regex=True)
+#                            .astype(float))
 
-df['OVERTIME'] = (df['OVERTIME'].replace('[\$,]', '', regex=True)
-                           .astype(float))
+# df['OTHER'] = (df['OTHER'].replace('[\$,]', '', regex=True)
+#                            .astype(float))
 
-df['INJURED'] = (df['INJURED'].replace('[\$,]', '', regex=True)
-                           .astype(float))
+# df['OVERTIME'] = (df['OVERTIME'].replace('[\$,]', '', regex=True)
+#                            .astype(float))
 
-df['DETAIL '] = (df['DETAIL '].replace('[\$,]', '', regex=True)
-                           .astype(float))
+# df['INJURED'] = (df['INJURED'].replace('[\$,]', '', regex=True)
+#                            .astype(float))
 
-df['QUINN'] = (df['QUINN'].replace('[\$,]', '', regex=True)
-                           .astype(float))
+# df['DETAIL '] = (df['DETAIL '].replace('[\$,]', '', regex=True)
+#                            .astype(float))
 
-df['TOTAL EARNINGS'] = (df['TOTAL EARNINGS'].replace('[\$,]', '', regex=True)
-                           .astype(float))
+# df['QUINN'] = (df['QUINN'].replace('[\$,]', '', regex=True)
+#                            .astype(float))
 
-#check the data types of the variables
-df.dtypes
-print("\n after the pre-processig")
-print(df.head())
+# df['TOTAL EARNINGS'] = (df['TOTAL EARNINGS'].replace('[\$,]', '', regex=True)
+#                            .astype(float))
+
+mod_columns = ['REGULAR', 'RETRO', 'OTHER', 'OVERTIME', 'INJURED', 'DETAIL ', 'QUINN', 'TOTAL EARNINGS']
+for col in mod_columns:
+    df[col] = df[col].replace('[\$,]', '', regex=True).astype(float)
+
+df = df[df['Total Earnings'] > 1000] #removing the possible data errors
+
+sns.histplot(df["Total Earnings"])
+plt.title("Total Earnings by Department")
+plt.xlabel("Earning")
+plt.ylabel("Counts")
+plt.xticks(rotation=90)
+plt.show()
+plt.savefig('earning distribution.png')
 
 DBOperations.data_dump_mysql(df)
 #create boxplots to identify outliers
