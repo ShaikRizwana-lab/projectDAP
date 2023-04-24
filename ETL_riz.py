@@ -1,98 +1,49 @@
 from os import path
 import sys
 sys.path.append(path.abspath(r'C:\\Users\\Rizwana\Desktop\Assignments\DAP\DAP_Project'))
-
 from Connections.Connnections_Riz import DBConnections
 from Operations.ops import DBOperations
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import scipy
-import numpy
-import csv 
-import json
+
+def Extract(raw_data_df):
+    mongo_client = DBConnections.Connection_mongo()
+    db = mongo_client['DAP_test']
+    db.drop_collection("Financial")
+    financial_db = db["Financial"]
+    DBOperations.insert_df_mongo(raw_data_df,financial_db)
+    df = DBOperations.get_data_mongo(financial_db)
+    return df
 
 
-file1 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2012.csv"
-file2 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2011.csv"
+def pre_processing(df):
+    df = df.fillna(0.00)
+    mod_columns = ['REGULAR', 'RETRO', 'OTHER', 'OVERTIME', 'INJURED', 'DETAIL ', 'QUINN', 'TOTAL EARNINGS']
+    for col in mod_columns:
+        df[col] = df[col].replace('[\$,]', '', regex=True).astype(float)
 
-raw_data_df = pd.concat(map(pd.read_csv, [file1, file2]), ignore_index=True)
+    df = df[df['Total Earnings'] > 1000] #removing the possible data errors
+    return df
 
-mongo_client = DBConnections.Connection_mongo()
-db = mongo_client['DAP_test']
-db.drop_collection("Financial")
+def vizualization(df):
+    sns.histplot(df["Total Earnings"])
+    plt.title("Total Earnings by Department")
+    plt.xlabel("Earning")
+    plt.ylabel("Counts")
+    plt.xticks(rotation=90)
+    plt.show()
+    plt.savefig('earning distribution.png')
 
-financial_db = db["Financial"]
+def fianace_main(file1, file2):
+    raw_data_df = pd.concat(map(pd.read_csv, [file1, file2]), ignore_index=True)
+    df = Extract(raw_data_df)
+    df = pre_processing(df)
+    vizualization(df)
+    DBOperations.data_dump_mysql(df)
 
-DBOperations.insert_df_mongo(raw_data_df,financial_db)
-
-df = DBOperations.get_data_mongo(financial_db)
-
-#print(df.head())
-
-
-
-#_______________________________________________________________
-
-#print(len(df))
-
-#checking for all the NA values
-#print(df.isnull().sum())
-######################Transformation
-#removing NA and replacing it with 0
-df = df.fillna(0.00)
-#print(df.isnull().sum())
-
-#checking for duplicate values
-#print(df.duplicated().sum())
-
-#print(df.describe())
-
-#Changing datatype from string to 
-
-# df['REGULAR'] = (df['REGULAR'].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-# df['RETRO'] = (df['RETRO'].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-# df['OTHER'] = (df['OTHER'].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-# df['OVERTIME'] = (df['OVERTIME'].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-# df['INJURED'] = (df['INJURED'].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-# df['DETAIL '] = (df['DETAIL '].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-# df['QUINN'] = (df['QUINN'].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-# df['TOTAL EARNINGS'] = (df['TOTAL EARNINGS'].replace('[\$,]', '', regex=True)
-#                            .astype(float))
-
-mod_columns = ['REGULAR', 'RETRO', 'OTHER', 'OVERTIME', 'INJURED', 'DETAIL ', 'QUINN', 'TOTAL EARNINGS']
-for col in mod_columns:
-    df[col] = df[col].replace('[\$,]', '', regex=True).astype(float)
-
-df = df[df['Total Earnings'] > 1000] #removing the possible data errors
-
-sns.histplot(df["Total Earnings"])
-plt.title("Total Earnings by Department")
-plt.xlabel("Earning")
-plt.ylabel("Counts")
-plt.xticks(rotation=90)
-plt.show()
-plt.savefig('earning distribution.png')
-
-DBOperations.data_dump_mysql(df)
-#create boxplots to identify outliers
-"""y = list(df.REGULAR)
-plt.boxplot(y)
-plt.show()
-"""
-
+if __name__ = '__main__':
+    file1 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2012.csv"
+    file2 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2011.csv"
+    main(file1, file2)

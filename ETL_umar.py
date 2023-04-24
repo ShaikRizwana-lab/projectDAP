@@ -11,12 +11,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-sys.path.append(path.abspath(r"D:\NCI\DAP\projectDAP"))
-path = r"D:\NCI\Database and Analytics\TABA\weather_data_CO_20230420\\"
-folder = os.fsencode(path)
-# df.to_csv('text.csv')
-
-
 def pre_processing(df):
     df['date_local'] = pd.to_datetime(df['date_local'])
     #CO post processing
@@ -36,8 +30,8 @@ def visualizations(y_variable, df, title_name ):
     plt.savefig(title_name+".png") # save the plot as a PNG file
 
 
-def data_dump_mysql(df):
-    client = DBConnections.Connection_Mysql()
+def data_dump_mysql(df, sql_password):
+    client = DBConnections.Connection_Mysql(password=sql_password)
     mycursor = client.cursor()
     mycursor.execute("CREATE DATABASE IF NOT EXISTS daptest")
     mycursor.execute("USE daptest")
@@ -103,13 +97,13 @@ def get_data_mysql(db):
 
 
 
-if __name__ == '__main__':
+def weather_main(path, sql_password):
     #Extraction
     filenames = []
-    for file in os.listdir(folder):
+    for file in os.listdir(path):
         filename = os.fsdecode(file)
         if filename.endswith( ('.json') ): # whatever file types you're using...
-            filenames.append(path+filename)
+            filenames.append(str(path)+'\\'+filename)
 
     db = DBConnections.Connection_mongo()
     weather_db = db['DAP_test']['Weather']
@@ -127,9 +121,12 @@ if __name__ == '__main__':
     visualizations("aqi", df_2006, "22006-2011 Aarthmetic Mean")
 
     #Loading
-    data_dump_mysql(df)
-    # structured_data = get_data_mysql(df)
+    data_dump_mysql(df, sql_password)
 
-    # print(structured_data.head())
+if __name__ == '__main__':
+    sys.path.append(path.abspath(r"D:\NCI\DAP\projectDAP"))
+    path = os.fsencode(r"D:\NCI\Database and Analytics\TABA\weather_data_CO_20230420\\")
+    weather_main(path, '9700')
+    
 
 

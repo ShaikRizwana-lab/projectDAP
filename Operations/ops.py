@@ -8,7 +8,7 @@ import scipy
 import numpy
 import csv 
 import json
-
+from pathlib import Path
 
 file1 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2012.csv" #Fiancial data
 file2 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2011.csv" #Fiancial data
@@ -29,10 +29,10 @@ class DBOperations:
                 db.insert_one(doc)
 
     def insert_json_mongo(file,db):
-        with open(file) as f:
-            print(f)
+        # data_f = {}
+        with open(file, 'r') as f:
             data = json.load(f)
-            db.insert_one(data)
+            db.insert_many(data)
 
     def insert_df_mongo(df,db):
         data = df.to_dict(orient='records')

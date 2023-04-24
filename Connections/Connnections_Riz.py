@@ -24,21 +24,18 @@ class DBConnections:
             print ("\nTrying to reconnect the server in 5 seconds...")
             time.sleep(5)
 
-    def Connection_Mysql():
+    def Connection_Mysql(password):
         try:
             # Creating connection object
             mydb = mysql.connector.connect(
                 host = "localhost",
                 user = "root",
-                password = "password@123"
+                password = password
             )
-            return mydb
             print("\n _____________ Connected to MYSQL DB _____________________")
+            return mydb
 
         except OperationalError as e:
             print ("Could not connect to server: %s ", e)
             print ("\nTrying to reconnect the server in 5 seconds...")
             time.sleep(5)
-
-
-print(DBConnections.Connection_Mysql())
