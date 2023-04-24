@@ -19,6 +19,6 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
     weather_main(path=Path(args.param1), sql_password=args.param2)
-    fianace_main(file1 = Path(args.param1), file2=Path(args.param2))
+    fianace_main(file1 = Path(args.param3), file2=Path(args.param4))
 
     print('Completed Running all the pipelines')
