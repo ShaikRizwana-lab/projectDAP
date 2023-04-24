@@ -10,13 +10,8 @@ class DBConnections:
     def Connection_mongo():
         try:
             client = pymongo.MongoClient('mongodb://localhost:27017'
-                     #username='user',
-                     #password='password',
-                     #authSource='the_database',
-                     #authMechanism='SCRAM-SHA-256'
                      ) 
-            #mongo_uri = "mongodb://dap2023:" + urllib.parse.quote("password@123") + "@cluster0.gbbogr4.mongodb.net"
-            #client2 = pymongo.MongoClient(mongo_uri)
+
             return client
         
         except pymongo.errors.ConnectionFailure as e:
