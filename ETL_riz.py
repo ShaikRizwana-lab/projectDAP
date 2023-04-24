@@ -43,7 +43,7 @@ def fianace_main(file1, file2):
     vizualization(df)
     DBOperations.data_dump_mysql(df)
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     file1 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2012.csv"
     file2 = r"C:\Users\Rizwana\Downloads\employee-earnings-report-2011.csv"
-    main(file1, file2)
+    fianace_main(file1, file2)

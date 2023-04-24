@@ -113,12 +113,14 @@ def weather_main(path, sql_password):
         DBOperations.insert_json_mongo(file,weather_db)
     df = DBOperations.get_data_mongo(weather_db)
 
+    
     #Transformation
     df, df_2005, df_2006 = pre_processing(df)
     visualizations("arithmetic_mean", df_2005, "2001-2005 Arthemetic Mean")
     visualizations("aqi", df_2005, "2001-2005 AQI")
     visualizations("arithmetic_mean", df_2006, "2006-2011 Arthemetic mean")
     visualizations("aqi", df_2006, "22006-2011 Aarthmetic Mean")
+    df.to_csv('merged_weather_json.csv', index=False)
 
     #Loading
     data_dump_mysql(df, sql_password)
