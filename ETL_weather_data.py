@@ -99,11 +99,24 @@ def get_data_mysql(db):
 
 def weather_main(path, sql_password):
     #Extraction
-    filenames = []
-    for file in os.listdir(path):
-        filename = os.fsdecode(file)
-        if filename.endswith( ('.json') ): # whatever file types you're using...
-            filenames.append(str(path)+'\\'+filename)
+    filenames = [
+        r'.\Datasets\weather_data\20010101.json',
+        r'.\Datasets\weather_data\20020101.json',
+        r'.\Datasets\weather_data\20030101.json',
+        r'.\Datasets\weather_data\20040101.json',
+        r'.\Datasets\weather_data\20050101.json',
+        r'.\Datasets\weather_data\20060101.json',
+        r'.\Datasets\weather_data\20070101.json',
+        r'.\Datasets\weather_data\20080101.json',
+        r'.\Datasets\weather_data\20090101.json',
+        r'.\Datasets\weather_data\20100101.json',
+        r'.\Datasets\weather_data\20110101.json',
+        r'.\Datasets\weather_data\20120101.json'
+    ]
+    # for file in os.listdir(path):
+    #     filename = os.fsdecode(file)
+    #     if filename.endswith( ('.json') ): # whatever file types you're using...
+    #         filenames.append(str(path)+'\\'+filename)
 
     db = DBConnections.Connection_mongo()
     weather_db = db['DAP_test']['Weather']
@@ -116,18 +129,18 @@ def weather_main(path, sql_password):
     
     #Transformation
     df, df_2005, df_2006 = pre_processing(df)
-    visualizations("arithmetic_mean", df_2005, "2001-2005 Arthemetic Mean")
-    visualizations("aqi", df_2005, "2001-2005 AQI")
-    visualizations("arithmetic_mean", df_2006, "2006-2011 Arthemetic mean")
-    visualizations("aqi", df_2006, "22006-2011 Aarthmetic Mean")
+    visualizations("arithmetic_mean", df_2005, "./Images/weather/2001-2005 Arthemetic Mean")
+    visualizations("aqi", df_2005, "./Images/weather/2001-2005 AQI")
+    visualizations("arithmetic_mean", df_2006, "./Images/weather/2006-2011 Arthemetic mean")
+    visualizations("aqi", df_2006, "./Images/weather/2006-2011 Aarthmetic Mean")
     df.to_csv('merged_weather_json.csv', index=False)
 
     #Loading
     data_dump_mysql(df, sql_password)
 
 if __name__ == '__main__':
-    sys.path.append(path.abspath(r"D:\NCI\DAP\projectDAP"))
-    path = os.fsencode(r"D:\NCI\Database and Analytics\TABA\weather_data_CO_20230420\\")
+    sys.path.append(path.abspath(r"D:\xyz\projectDAP"))
+    path = os.fsencode(r"D:\xyz\projectDAP\Datasets\weather_data")
     weather_main(path, '9700')
     
 

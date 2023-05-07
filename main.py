@@ -7,7 +7,7 @@ from pathlib import Path
 parser = argparse.ArgumentParser()
 
 # Add the arguments
-parser.add_argument('param1', type=str, help='weather data path', default='.\Datasets\weather data')
+parser.add_argument('param1', type=str, help='weather data path', default='.\Datasets\weather_data')
 parser.add_argument('param2', type=str, help='MySql Password')
 # parser.add_argument('param3', type=str, help='finance data 1 path', default='.\Datasets\finance data')
 # parser.add_argument('param4', type=str, help='finance data 2 path', default='.\Datasets\finance data')
